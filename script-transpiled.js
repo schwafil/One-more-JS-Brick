@@ -24,6 +24,7 @@ var ballRadius = canvas.width / 100,
     brickHeight = (canvas.height - 4 * brickOffsetTop) / (brickColumnCount + 1),
     brickPadding = brickWidth / brickRowCount;
 var ballCount = 10;
+var magic = Math.ceil(ballRadius);
 var score = 0,
     highscore = 0;
 
@@ -33,6 +34,7 @@ var aimX = canvas.width / 2,
     aimY = canvas.height - brickOffsetTop;
 var play = false;
 
+var endGame = new Audio("gameover.wav");
 var bounce = new Audio("bounce3.wav");
 var beeps = [];
 for (var bee = 0; bee < ballCount; bee++) {
@@ -111,6 +113,7 @@ function resizeCanvas() {
     canvas.height = window.innerHeight * 0.7;
     ballRadius = canvas.width / 100, brickOffsetTop = canvas.height * 0.07, brickOffsetLeft = canvas.width * 0.03, brickWidth = (canvas.width - 2 * brickOffsetLeft) / (brickRowCount + 1), brickHeight = (canvas.height - 4 * brickOffsetTop) / (brickColumnCount + 1), brickPadding = brickWidth / brickRowCount;
     aimY = canvas.height - brickOffsetTop;
+    magic = Math.ceil(ballRadius);
 }
 function CASStorage() {
     if (typeof Storage !== "undefined") {
@@ -197,17 +200,6 @@ function collisionDetection() {
                             CASStorage();
                         }
                     }
-
-                    /*  if (ball.x > brick.x && ball.x < brick.x + brickWidth && ball.y > brick.y && ball.y < brick.y + brickHeight) {
-                          ball.dy = -ball.dy;
-                          brick.hits--;
-                          score++;
-                          if (score === brickRowCount * brickColumnCount *10) {
-                              alert("YOU WIN, CONGRATS!");
-                              document.location.reload();
-                          }
-                      }
-                      */
                 }
             }
         }
@@ -254,9 +246,9 @@ function drawBricks() {
 }
 function drawScore() {
     /*ctx.font = "16px Arial";
-    ctx.fillStyle = "#dd8b00";
-    ctx.textAlign="left";
-    ctx.fillText("Score: " + score + " HighScore: "+highscore, 8, 20);*/
+     ctx.fillStyle = "#dd8b00";
+     ctx.textAlign="left";
+     ctx.fillText("Score: " + score + " HighScore: "+highscore, 8, 20);*/
     document.querySelector("#info").innerText = "Score: " + score + " HighScore: " + highscore;
 }
 
@@ -306,9 +298,10 @@ function draw() {
                     ball.y += ball.dy;
                 } else {
 
-                    if (releaseCounter % 10 === 0) {
-                        console.log(releaseCounter / 10);
-                        if (_b2 === releaseCounter / 10) {
+                    if (releaseCounter % magic === 0) {
+                        //console.log(releaseCounter/10);
+                        if (_b2 === releaseCounter / magic) {
+                            console.log(ballRadius);
                             //console.log("putting ball "+b);
                             ball.putInto = false;
                             ball.inGame = true;
@@ -319,8 +312,13 @@ function draw() {
         }
         if (!balling) {
             if (shiftAddBricks()) {
-                alert("GAME OVER");
-                document.location.reload();
+                // alert("GAME OVER");
+                document.querySelector("#info").innerText = "GAME OVER!! Score: " + score + " HighScore: " + highscore;
+                endGame.play();
+
+                setTimeout(function () {
+                    document.location.reload();
+                }, 500);
             }
             play = false;
             aimX = balls[0].x;
