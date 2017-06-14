@@ -11,22 +11,11 @@ canvas { background: #000000;
     text-align: left;
     text-decoration: none;
     display: flex;
-    flex-direction: column;
+    flex-direction: row;
     font-size: 16px;
     font-family: Arial;
 }
-#head{
-    background-color: orange;
-    border: none;
-    color: white;
-    text-align: center;
-    text-decoration: none;
-    display: flex;
-    flex-direction: column;
-    font-size: 26px;
-    font-family: Arial;
-}
-.menu {
+.menu{
     background: orange;
     position: fixed;
     right:0;
@@ -48,6 +37,6 @@ body.menu-visible .menu  {
     text-align: center;
     text-decoration: none;
     display: flex;
-    flex-direction: column;
+    flex-direction: row;
     font-size: 16px;
 }

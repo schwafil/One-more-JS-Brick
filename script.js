@@ -8,9 +8,7 @@ canvas.height = window.innerHeight * 0.7;
 
 let dx = 2;
 let dy = -2;
-
-let rightPressed = false;
-let leftPressed = false;
+let speedup = 5,speeds = false;
 const brickRowCount = 10;
 const brickColumnCount = 10;
 let ballRadius = canvas.width / 100, brickOffsetTop = canvas.height * 0.07, brickOffsetLeft = canvas.width * 0.03,
@@ -27,7 +25,7 @@ let aimX = canvas.width / 2, aimY = canvas.height - brickOffsetTop;
 let play = false;
 
 
-const endGame = new Audio("gameover.wav")
+const endGame = new Audio("gameover.wav");
 const bounce = new Audio("bounce3.wav");
 const beeps = [];
 for (let bee = 0; bee < ballCount; bee++) {
@@ -122,20 +120,25 @@ function CASStorage() {
     }
 }
 function keyDownHandler(e) {
-    if (e.keyCode === 39) {
-        rightPressed = true;
+    if (e.keyCode === 32 && !speeds) {
+        //speedup = 3;
+        for(let b=0;b<ballCount;b++){
+            balls[b].dx *=speedup;
+            balls[b].dy *=speedup;
+        }
+        speeds = true;
     }
-    else if (e.keyCode === 37) {
-        leftPressed = true;
-    }
+
 }
 function keyUpHandler(e) {
-    if (e.keyCode === 39) {
-        rightPressed = false;
+    if (e.keyCode === 32 && speeds) {
+        for(let b=0;b<ballCount;b++){
+            balls[b].dx /=speedup;
+            balls[b].dy /=speedup;
+        }
+        speeds = false;
     }
-    else if (e.keyCode === 37) {
-        leftPressed = false;
-    }
+
 }
 function mouseMoveHandler(e) {
     mouseX = e.clientX;
