@@ -12,9 +12,8 @@ canvas.height = window.innerHeight * 0.7;
 
 var dx = 2;
 var dy = -2;
-
-var rightPressed = false;
-var leftPressed = false;
+var speedup = 5,
+    speeds = false;
 var brickRowCount = 10;
 var brickColumnCount = 10;
 var ballRadius = canvas.width / 100,
@@ -129,17 +128,22 @@ function CASStorage() {
     }
 }
 function keyDownHandler(e) {
-    if (e.keyCode === 39) {
-        rightPressed = true;
-    } else if (e.keyCode === 37) {
-        leftPressed = true;
+    if (e.keyCode === 32 && !speeds) {
+        //speedup = 3;
+        for (var _b = 0; _b < ballCount; _b++) {
+            balls[_b].dx *= speedup;
+            balls[_b].dy *= speedup;
+        }
+        speeds = true;
     }
 }
 function keyUpHandler(e) {
-    if (e.keyCode === 39) {
-        rightPressed = false;
-    } else if (e.keyCode === 37) {
-        leftPressed = false;
+    if (e.keyCode === 32 && speeds) {
+        for (var _b2 = 0; _b2 < ballCount; _b2++) {
+            balls[_b2].dx /= speedup;
+            balls[_b2].dy /= speedup;
+        }
+        speeds = false;
     }
 }
 function mouseMoveHandler(e) {
@@ -158,13 +162,13 @@ function mouseClickHandler(e) {
         dy /= v;
         play = true;
         releaseCounter = 0;
-        for (var _b = 0; _b < ballCount; _b++) {
-            balls[_b].inGame = true;
-            balls[_b].putInto = true;
-            balls[_b].dx = dx;
-            balls[_b].dy = dy;
-            balls[_b].x = aimX; // - ballRadius*b*dx;
-            balls[_b].y = aimY; // - ballRadius*b*dy;
+        for (var _b3 = 0; _b3 < ballCount; _b3++) {
+            balls[_b3].inGame = true;
+            balls[_b3].putInto = true;
+            balls[_b3].dx = dx;
+            balls[_b3].dy = dy;
+            balls[_b3].x = aimX; // - ballRadius*b*dx;
+            balls[_b3].y = aimY; // - ballRadius*b*dy;
         }
     }
 }
@@ -272,18 +276,18 @@ function draw() {
 
         collisionDetection();
         var balling = false;
-        for (var _b2 = 0; _b2 < ballCount; _b2++) {
-            var ball = balls[_b2];
+        for (var _b4 = 0; _b4 < ballCount; _b4++) {
+            var ball = balls[_b4];
             if (!ball.inGame && !ball.putInto) continue;
             drawBall(ball.x, ball.y);
 
             if (ball.x + ball.dx > canvas.width - ballRadius || ball.x + ball.dx < ballRadius) {
                 ball.dx = -ball.dx;
-                beeps2[_b2].play();
+                beeps2[_b4].play();
             }
             if (ball.y + ball.dy < ballRadius) {
                 ball.dy = -ball.dy;
-                beeps2[_b2].play();
+                beeps2[_b4].play();
             } else if (ball.y + ball.dy > canvas.height - ballRadius) {
                 // ball gets out of bottom border
                 //if first ball, --live, set x etc, else nothing?
@@ -300,7 +304,7 @@ function draw() {
 
                     if (releaseCounter % magic === 0) {
                         //console.log(releaseCounter/10);
-                        if (_b2 === releaseCounter / magic) {
+                        if (_b4 === releaseCounter / magic) {
                             console.log(ballRadius);
                             //console.log("putting ball "+b);
                             ball.putInto = false;
